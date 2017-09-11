@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-
-try:
-    from urlparse import urlparse
-except ImportError:
-    from urllib.parse import urlparse
-
 import logging
 
 import requests
@@ -16,11 +10,10 @@ log = logging.getLogger(__name__)
 EXCHANGE_PATH = '/mgmt/shared/authn/exchange'
 LOGIN_PATH = '/mgmt/shared/authn/login'
 
-def f5_exchange_token(r, refresh_token):
+def f5_exchange_token(host, refresh_token):
 
-    host = urlparse(r.url).hostname
     url = 'https://%s%s' % (host, EXCHANGE_PATH)
-    body = {'refreshToken':refresh_token}
+    body = {'refreshToken':{'token':refresh_token}}
 
     log.debug('Sending refresh token exchange request.')
     resp = requests.post(url=url, json=body, verify=False)
@@ -42,13 +35,12 @@ def f5_exchange_token(r, refresh_token):
 
 
 
-def f5_login(r,
+def f5_login(host,
         username,
         password,
         providerName=None,
         loginReference=None):
 
-    host = urlparse(r.url).hostname
     url = 'https://%s/%s' % (host, LOGIN_PATH)
     body = {'username': username, 'password':password}
 

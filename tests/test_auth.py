@@ -4,6 +4,7 @@ import requests
 from requests import Request, Session
 from requests_f5auth import XF5Auth
 from requests_f5auth.exceptions import F5AuthenticationError
+from requests_f5auth import utils
 
 
 
@@ -29,11 +30,36 @@ class XF5AuthTest(unittest.TestCase):
         self.assertEquals(resp.status_code, 200)
 
     def test_refresh_token(self):
-        pass
+        (access_token, refresh_token) = utils.f5_login(self.bigiq_addr, self.username, self.password)
+
+        auth = XF5Auth(refresh_token=refresh_token)
+        r = Request('GET', self.url, auth=auth).prepare()
+
+        # ensure url didn't get messed up
+        self.assertEqual(r.url, self.url)
+        self.assertTrue(r.headers.get('X-F5-Auth-Token', ''))
+
+        s = Session()
+        resp = s.send(r, verify=False)
+
+        self.assertEquals(resp.status_code, 200)
 
 
     def test_access_token(self):
-        pass
+        (access_token, refresh_token) = utils.f5_login(self.bigiq_addr, self.username, self.password)
+
+        auth = XF5Auth(access_token=access_token)
+        r = Request('GET', self.url, auth=auth).prepare()
+
+        # ensure url didn't get messed up
+        self.assertEqual(r.url, self.url)
+        self.assertTrue(r.headers.get('X-F5-Auth-Token', ''))
+
+        s = Session()
+        resp = s.send(r, verify=False)
+
+        self.assertEquals(resp.status_code, 200)
+
 
     def test_fail_login(self):
         auth = XF5Auth(self.username, self.password + 'NOT RIGHT')

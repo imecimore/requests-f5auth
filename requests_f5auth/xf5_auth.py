@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+try:
+        from urlparse import urlparse
+except ImportError:
+        from urllib.parse import urlparse
+
 import logging
 
 from requests.auth import AuthBase
@@ -33,12 +38,13 @@ class XF5Auth(AuthBase):
 
         # if we have don't have an access token...
         if not self.access_token:
+            host = urlparse(r.url).hostname
             # use the refresh token to get an access token
             if self.refresh_token:
-                self.access_token = f5_exchange_token(r, self.refresh_token)
+                self.access_token = f5_exchange_token(host, self.refresh_token)
             # otherwise use the username and password to login
             else:
-                self.access_token, self.refresh_token = f5_login(r, self.username,
+                self.access_token, self.refresh_token = f5_login(host, self.username,
                         self.password)
 
         log.debug('Sending request %s using access token %s', r,
