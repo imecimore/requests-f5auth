@@ -1,0 +1,8 @@
+settings:
+  is_long_test_allowed: True
+device:
+  address: '10.145.196.234'
+  username: 'admin'
+  password: 'f5site02'
+
+
