@@ -56,6 +56,9 @@ setup(
     ),
     zip_safe=False,
     tests_require=[
+        'nose',
+        'nose-testconfig',
+        'pyyaml'
     ],
     test_suite='tests'
 )
