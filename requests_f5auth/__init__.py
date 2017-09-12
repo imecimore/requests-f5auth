@@ -1,7 +1,6 @@
 import logging
 
 from .xf5_auth import XF5Auth
-from .xf5_session import XF5Session
 
 __version__ = '0.1.0'
 

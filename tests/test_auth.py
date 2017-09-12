@@ -9,16 +9,18 @@ from requests_f5auth import utils
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+from testconfig import config
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class XF5AuthTest(unittest.TestCase):
 
     def setUp(self):
-        self.is_long_test_allowed = True
+        self.is_long_test_allowed = config['settings']['is_long_test_allowed']
 
-        self.bigiq_addr = '10.145.196.234'
-        self.username = 'admin'
-        self.password = 'f5site02'
+        self.bigiq_addr = config['device']['address']
+        self.username = config['device']['username']
+        self.password = config['device']['password']
         self.url = 'https://' + self.bigiq_addr + '/mgmt/shared/echo'
 
     def test_username_password(self):
@@ -131,13 +133,14 @@ class XF5AuthTest(unittest.TestCase):
         r = s.get(self.url)
         self.assertEquals(r.status_code, 200)
 
-        with self.assertRaises(F5AuthenticationError) as cm:
-            try:
-                self._verify_session(s)
-            except F5AuthenticationError as e:
-                self.assertIn("username", e.args[0])
-                self.assertIn("password", e.args[0])
-                raise
+        if self.is_long_test_allowed:
+            with self.assertRaises(F5AuthenticationError) as cm:
+                try:
+                    self._verify_session(s)
+                except F5AuthenticationError as e:
+                    self.assertIn("username", e.args[0])
+                    self.assertIn("password", e.args[0])
+                    raise
 
     def test_fail_login(self):
         auth = XF5Auth(self.username, self.password + 'NOT RIGHT')
