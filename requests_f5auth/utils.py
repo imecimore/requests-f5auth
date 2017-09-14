@@ -19,10 +19,7 @@ def f5_exchange_token(host, refresh_token):
     resp = requests.post(url=url, json=body, verify=False)
 
     if not resp.ok:
-        try:
-            msg = resp.json()['message']
-        except Exception:
-            pass
+        msg = resp.json().get('message', None)
         errorMsg = "Failed to exchange refresh token."
         if msg:
             errorMsg += '  Reason: %s' % msg
@@ -54,10 +51,7 @@ def f5_login(host,
     resp = requests.post(url=url, json=body, verify=False)
 
     if not resp.ok:
-        try:
-            msg = resp.json()['message']
-        except Exception:
-            pass
+        msg = resp.json().get('message', None)
         errorMsg = "Failed to login user %s." % username
         if msg:
             errorMsg += '  Reason: %s' % msg

@@ -69,8 +69,12 @@ class XF5Auth(AuthBase):
                 self.access_token = f5_exchange_token(host, self.refresh_token)
             # otherwise use the username and password to login
             elif self.username and self.password:
-                self.access_token, self.refresh_token = f5_login(host, self.username,
-                        self.password)
+                self.access_token, self.refresh_token = f5_login(
+                        host,
+                        self.username,
+                        self.password,
+                        providerName=self.loginProviderName,
+                        loginReference=self.loginReference)
             else:
                 raise F5AuthenticationError("No valid tokens and no username or password were provided")
 

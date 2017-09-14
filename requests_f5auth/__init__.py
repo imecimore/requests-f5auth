@@ -2,7 +2,7 @@ import logging
 
 from .xf5_auth import XF5Auth
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 import requests
 if requests.__version__ < '2.0.0':
