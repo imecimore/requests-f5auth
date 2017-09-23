@@ -88,4 +88,8 @@ class XF5Auth(AuthBase):
 
         return r
 
+    def __repr__(self):
+        return '{0}.{1}(username={2}, loginProviderName={3}, loginReference={4})'.format(
+                self.__module__, type(self).__name__,
+                self.username, self.loginProviderName, self.loginReference)
 
